@@ -34,3 +34,4 @@ jobs:
           distribution: 'temurin'
       - run: mvn --batch-mode --update-snapshots verify
       - run: mkdir staging && cp target/*.jar staging
+      - run: mvn test
