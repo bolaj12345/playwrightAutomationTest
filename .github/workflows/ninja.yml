@@ -35,4 +35,12 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
       - run: mvn --batch-mode --update-snapshots verify
+      - name: Run tests with Maven
+        run: mvn test
+      - name: Upload TestNG results
+        if: always()  # This step will run even if tests fail
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: target/test-classes/testng-results.xml
 
