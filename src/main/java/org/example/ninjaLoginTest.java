@@ -14,7 +14,7 @@ public class ninjaLoginTest {
 
         Playwright playwright = Playwright.create();
         BrowserType browserType = playwright.chromium();
-        Browser browser = browserType.launch(new BrowserType.LaunchOptions().setHeadless(false).setSlowMo(200));
+        Browser browser = browserType.launch(new BrowserType.LaunchOptions().setHeadless(true).setSlowMo(200));
         // Browser browser = browserType.launch(new BrowserType.LaunchOptions().setHeadless(false));
         BrowserContext context = browser.newContext();
         Page page = context.newPage();
@@ -34,7 +34,7 @@ public class ninjaLoginTest {
 
         Playwright playwright = Playwright.create();
         BrowserType browserType = playwright.chromium();
-        Browser browser = browserType.launch(new BrowserType.LaunchOptions().setHeadless(false).setSlowMo(200));
+        Browser browser = browserType.launch(new BrowserType.LaunchOptions().setHeadless(true).setSlowMo(200));
         // Browser browser = browserType.launch(new BrowserType.LaunchOptions().setHeadless(false));
         BrowserContext context = browser.newContext();
         Page page = context.newPage();
