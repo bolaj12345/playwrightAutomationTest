@@ -1,39 +1,49 @@
-
-
-name: Java Maven Build & Publish Artifact
+name: Java CI with Maven and TestNG
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
-  build_test:
-
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up JDK 17
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 11
         uses: actions/setup-java@v3
         with:
-          java-version: '17'
-          distribution: 'temurin'
-          cache: maven
-      - name: Build with Maven
-        run: mvn -B package --file pom.xml
+          java-version: '11'  # Set the desired JDK version (11 in this case)
+          distribution: 'adoptopenjdk'  # You can use other distributions like 'temurin'
 
-  publish-job:
-    runs-on: ubuntu-latest
-    needs: build_test
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - name: Set up Maven
+        uses: actions/setup-java@v3
         with:
-          java-version: '17'
-          distribution: 'temurin'
-      - run: mvn --batch-mode --update-snapshots verify
-      - run: mkdir staging && cp target/*.jar staging
-      - run: mvn clean install
+          maven-version: '3.8.1'  # Specify the Maven version if needed
 
+      - name: Cache Maven dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository  # Cache Maven dependencies
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}  # Use `pom.xml` file hash as key
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Build with Maven
+        run: mvn clean install -DskipTests  # Compile the project without running tests initially
+
+      - name: Run tests with Maven
+        run: mvn test  # Run the tests with Maven (TestNG will be executed)
+
+      - name: Upload TestNG results
+        if: always()  # This step will run even if tests fail
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: target/test-classes/testng-results.xml  # Path to the TestNG results XML file (adjust if needed)
